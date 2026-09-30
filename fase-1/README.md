@@ -42,7 +42,7 @@ Además, se aplicaron pruebas de Wilcoxon sobre los errores absolutos para verif
 
 ## Principales resultados
 
-Resultados en el conjunto de prueba (20 %):
+Resultados en el conjunto de prueba (20 %), obtenidos en nuestra ejecución. Con la semilla fija son reproducibles en un mismo equipo, pero pueden variar ligeramente en otros equipos o con otras versiones de las librerías; el notebook recalcula todos los valores en la celda *Resumen de resultados*.
 
 | Modelo | MAE | RMSE | R² |
 |---|---|---|---|
