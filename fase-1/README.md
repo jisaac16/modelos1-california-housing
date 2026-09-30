@@ -76,8 +76,8 @@ Requiere Python 3.14.
 
 1. Clonar el repositorio y entrar a la carpeta:
    ```bash
-   git clone git@github.com:jisaac16/modelos1-california-housing-work.git
-   cd modelos1-california-housing-work
+   git clone git@github.com:jisaac16/modelos1-california-housing.git
+   cd modelos1-california-housing
    ```
 2. Crear un entorno virtual e instalar las dependencias:
    ```bash
