@@ -7,6 +7,12 @@ Al ir dentro del Pipeline, estas reglas se guardan junto con el modelo.
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 
+TOPE_CENSAL = 500001  # Valores en el tope están censurados: no se conoce el valor real.
+LIMITACION = (
+    f"Válido para sectores censales con valor menor a {TOPE_CENSAL} USD (censo de 1990). "
+    "No estima viviendas individuales ni el mercado actual."
+)
+
 # Columnas que debe traer el CSV de entrada (sin la variable objetivo).
 COLUMNAS_ENTRADA = [
     "longitude",
@@ -38,6 +44,17 @@ def validar_columnas(df, columnas_requeridas):
     faltantes = [c for c in columnas_requeridas if c not in df.columns]
     if faltantes:
         raise ValueError(f"Faltan columnas requeridas: {', '.join(faltantes)}")
+
+
+def validar_tipos(df):
+    """Lanza un error claro si una columna numérica trae texto. Los nulos se permiten."""
+    for columna in COLUMNAS_ENTRADA:
+        if columna == "ocean_proximity":
+            continue
+        numeros = pd.to_numeric(df[columna], errors="coerce")
+        filas = df.index[numeros.isna() & df[columna].notna()].tolist()
+        if filas:
+            raise ValueError(f"La columna {columna} debe ser numérica (filas: {filas[:5]})")
 
 
 class PreparadorDatos(BaseEstimator, TransformerMixin):

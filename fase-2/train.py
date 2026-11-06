@@ -16,15 +16,16 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import GroupShuffleSplit
 from sklearn.pipeline import Pipeline
 
-from src.procesamiento import COLUMNAS_ENTRADA, PreparadorDatos, validar_columnas
+from src.procesamiento import (
+    COLUMNAS_ENTRADA,
+    LIMITACION,
+    TOPE_CENSAL,
+    PreparadorDatos,
+    validar_columnas,
+)
 
-TOPE_CENSAL = 500001  # Valores en el tope están censurados: no se conoce el valor real.
 TAMANO_ZONA = 0.5  # Tamaño en grados de cada zona geográfica (unos 50 km).
 FUENTE_DATOS = "https://www.kaggle.com/datasets/camnugent/california-housing-prices"
-LIMITACION = (
-    f"Válido para sectores censales con valor menor a {TOPE_CENSAL} USD (censo de 1990). "
-    "No estima viviendas individuales ni el mercado actual."
-)
 
 
 def cargar_datos(ruta, objetivo):
