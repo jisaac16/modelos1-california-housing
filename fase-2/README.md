@@ -117,9 +117,21 @@ Las versiones usan el mismo algoritmo con distinta semilla, y con ella cambian l
 
 ## Docker
 
-> **Pendiente de verificar:** la imagen todavía no se ha construido ni ejecutado. Estos comandos deben probarse antes de la entrega.
+Comandos para **Bash** (Linux), desde `fase-2`. Son los que se ejecutaron para la evidencia, en Artix Linux con Docker 29.9:
 
-Comandos para **PowerShell**, desde `fase-2`:
+```bash
+docker build -t modelos-fase2:1.0 .
+
+mkdir -p models outputs
+
+docker run --rm --user "$(id -u):$(id -g)" -e COMMIT=$(git rev-parse HEAD) -v "${PWD}/../data/raw:/app/data/raw:ro" -v "${PWD}/models:/app/models" modelos-fase2:1.0 python train.py --data data/raw/housing.csv --target median_house_value --output-dir models --version v-docker --seed 42
+
+docker run --rm --user "$(id -u):$(id -g)" -v "${PWD}/data:/app/data:ro" -v "${PWD}/models:/app/models:ro" -v "${PWD}/outputs:/app/outputs" modelos-fase2:1.0 python predict.py --model models/v-docker/modelo.joblib --input data/ejemplo_prediccion.csv --output outputs/predicciones.csv
+```
+
+En Linux, `--user` deja los archivos generados a nombre del usuario; sin esa opción quedan a nombre de `root`.
+
+Los mismos comandos para **PowerShell**, desde `fase-2`. Esta variante no se ejecutó, porque el equipo Windows del proyecto no tiene WSL y Docker Desktop no arranca en él:
 
 ```powershell
 docker build -t modelos-fase2:1.0 .
@@ -175,7 +187,8 @@ La semilla 42 quedó en la parte alta del rango. Se mantuvo porque cambiarla por
 - Los 965 sectores en el tope de 500.001 USD se excluyen del entrenamiento, y su valor real se desconoce. El modelo no aplica a sectores por encima del tope, y no se puede saber de antemano si un sector nuevo lo superaría.
 - La unidad de predicción es el sector censal de 1990: no estima viviendas individuales ni el mercado actual.
 - `modelo.joblib` necesita la carpeta `src/` y versiones compatibles de las librerías para cargarse. Solo deben cargarse archivos de confianza.
-- Con los mismos datos, semilla y entorno, los resultados se repiten en este equipo. Pueden variar ligeramente en otros sistemas o versiones de las librerías.
+- Con los mismos datos y semilla, `v1` (Windows, Python 3.14.2) y su repetición en Docker (Linux, Python 3.14.10) dieron las mismas métricas y predicciones. Podrían variar con otras versiones de las librerías.
+- La imagen `python:3.14-slim` fija la versión 3.14, pero no el parche de Python: puede cambiar al reconstruirla. La versión usada queda en `metadata.json`.
 
 ## Evidencia de ejecución
 
@@ -204,6 +217,35 @@ Error: Faltan columnas requeridas: latitude
 ```
 
 Pruebas:
+
+```text
+14 passed
+```
+
+Docker (en Bash), con la imagen `modelos-fase2:1.0`. Entrenamiento con la semilla de `v1`, que da las mismas métricas:
+
+```text
+Entrenamiento: 15718 filas. Prueba: 3957 filas.
+Modelo -> MAE: 51,424.86, RMSE: 67,281.28, R2: 0.5752
+Base   -> MAE: 86,373.73, RMSE: 106,756.40, R2: -0.0695
+Archivos guardados en models/v-docker: modelo.joblib, metrics.json, metadata.json
+```
+
+Predicción, con los contenedores ya eliminados y los archivos en `models/` y `outputs/` del equipo anfitrión:
+
+```text
+2 predicciones guardadas en outputs/predicciones.csv
+prediccion: 433644.16, 452837.15
+```
+
+Errores dentro del contenedor, ambos con código de salida 1 (y sin archivo de salida en el segundo):
+
+```text
+Error: La versión 'v-docker' ya existe en models/v-docker. No se sobrescribirá.
+Error: Faltan columnas requeridas: latitude
+```
+
+Pruebas dentro del contenedor (`python -m pytest`):
 
 ```text
 14 passed
