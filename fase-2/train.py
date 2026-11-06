@@ -1,6 +1,8 @@
 import argparse
 import json
 import os
+import platform
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -18,6 +20,11 @@ from src.procesamiento import COLUMNAS_ENTRADA, PreparadorDatos, validar_columna
 
 TOPE_CENSAL = 500001  # Valores en el tope están censurados: no se conoce el valor real.
 TAMANO_ZONA = 0.5  # Tamaño en grados de cada zona geográfica (unos 50 km).
+FUENTE_DATOS = "https://www.kaggle.com/datasets/camnugent/california-housing-prices"
+LIMITACION = (
+    f"Válido para sectores censales con valor menor a {TOPE_CENSAL} USD (censo de 1990). "
+    "No estima viviendas individuales ni el mercado actual."
+)
 
 
 def cargar_datos(ruta, objetivo):
@@ -56,6 +63,25 @@ def calcular_metricas(y_real, y_predicho):
         "mae": float(mean_absolute_error(y_real, y_predicho)),
         "rmse": float(np.sqrt(mean_squared_error(y_real, y_predicho))),
         "r2": float(r2_score(y_real, y_predicho)),
+    }
+
+
+def obtener_commit():
+    """Devuelve el hash del commit actual, o un aviso si no hay Git (como en Docker)."""
+    try:
+        resultado = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            capture_output=True, text=True, check=True, cwd=Path(__file__).parent,
+        )
+        return resultado.stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return "no disponible"
+
+
+def describir_columnas(X):
+    return {
+        columna: "numérico" if pd.api.types.is_numeric_dtype(X[columna]) else "texto"
+        for columna in X.columns
     }
 
 
@@ -102,10 +128,25 @@ def entrenar(args):
         "tipo_problema": "Regresión",
         "variable_objetivo": args.target,
         "algoritmo": "LightGBM",
+        "parametros_modelo": modelo.named_steps["modelo"].get_params(),
         "seed": args.seed,
-        "observaciones_entrenamiento": len(X_ent),
-        "observaciones_prueba": len(X_pru),
-        "columnas_entrada": COLUMNAS_ENTRADA,
+        "columnas_entrada": describir_columnas(X),
+        "datos": {
+            "fuente": FUENTE_DATOS,
+            "archivo": os.path.basename(args.data),
+            "observaciones_usadas": len(X),
+        },
+        "particion": {
+            "estrategia": f"Zonas geográficas completas de {TAMANO_ZONA} grados (GroupShuffleSplit)",
+            "test_size_solicitado": args.test_size,
+            "observaciones_entrenamiento": len(X_ent),
+            "observaciones_prueba": len(X_pru),
+        },
+        "metrica_evaluacion": "MAE (también RMSE y R2)",
+        "limitacion": LIMITACION,
+        "python": platform.python_version(),
+        "dependencias": "requirements.txt",
+        "commit": obtener_commit(),
     }
     guardar_version(version_dir, modelo, metricas, metadatos)
 
