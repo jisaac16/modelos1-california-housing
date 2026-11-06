@@ -68,7 +68,9 @@ def calcular_metricas(y_real, y_predicho):
 
 
 def obtener_commit():
-    """Devuelve el hash del commit actual, o un aviso si no hay Git (como en Docker)."""
+    """Devuelve el hash del commit. En Docker no hay Git: se recibe en la variable COMMIT."""
+    if os.environ.get("COMMIT"):
+        return os.environ["COMMIT"]
     try:
         resultado = subprocess.run(
             ["git", "rev-parse", "HEAD"],
