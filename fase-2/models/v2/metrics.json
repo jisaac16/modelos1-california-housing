@@ -1,0 +1,9 @@
+{
+    "modelo": "LightGBM Reducido",
+    "mae_prueba": 34172.48683828008,
+    "rmse_prueba": 45468.4611218819,
+    "r2_prueba": 0.7421227763508754,
+    "baseline_mae": 70316.97488296976,
+    "baseline_rmse": 89537.27868170686,
+    "baseline_r2": -5.88726307038101e-07
+}
