@@ -37,9 +37,14 @@ def cargar_datos(ruta, objetivo):
     return datos_limpios[COLUMNAS_ENTRADA], datos_limpios[objetivo]
 
 
+def calcular_zonas(X):
+    """Asigna cada sector a un cuadro geográfico según sus coordenadas."""
+    return np.floor(X["latitude"] / TAMANO_ZONA) * 1000 + np.floor(X["longitude"] / TAMANO_ZONA)
+
+
 def separar_por_zona(X, y, test_size, seed):
     """Separa entrenamiento y prueba sin repartir una misma zona entre ambos."""
-    zonas = np.floor(X["latitude"] / TAMANO_ZONA) * 1000 + np.floor(X["longitude"] / TAMANO_ZONA)
+    zonas = calcular_zonas(X)
     if zonas.nunique() < 2:
         raise ValueError("Los datos deben cubrir al menos dos zonas geográficas para separarlos.")
 
