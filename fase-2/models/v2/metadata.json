@@ -1,0 +1,57 @@
+{
+    "version": "v2",
+    "fecha_creacion": "2026-11-06 12:01:08",
+    "tipo_problema": "Regresión",
+    "variable_objetivo": "median_house_value",
+    "algoritmo": "LightGBM",
+    "parametros_modelo": {
+        "boosting_type": "gbdt",
+        "class_weight": null,
+        "colsample_bytree": 1.0,
+        "importance_type": "split",
+        "learning_rate": 0.1,
+        "max_depth": -1,
+        "min_child_samples": 20,
+        "min_child_weight": 0.001,
+        "min_split_gain": 0.0,
+        "n_estimators": 100,
+        "n_jobs": null,
+        "num_leaves": 31,
+        "objective": null,
+        "random_state": 7,
+        "reg_alpha": 0.0,
+        "reg_lambda": 0.0,
+        "subsample": 1.0,
+        "subsample_for_bin": 200000,
+        "subsample_freq": 0,
+        "verbose": -1
+    },
+    "seed": 7,
+    "columnas_entrada": {
+        "longitude": "numérico",
+        "latitude": "numérico",
+        "housing_median_age": "numérico",
+        "total_rooms": "numérico",
+        "total_bedrooms": "numérico",
+        "population": "numérico",
+        "households": "numérico",
+        "median_income": "numérico",
+        "ocean_proximity": "texto"
+    },
+    "datos": {
+        "fuente": "https://www.kaggle.com/datasets/camnugent/california-housing-prices",
+        "archivo": "housing.csv",
+        "observaciones_usadas": 19675
+    },
+    "particion": {
+        "estrategia": "Zonas geográficas completas de 0.5 grados (GroupShuffleSplit)",
+        "test_size_solicitado": 0.2,
+        "observaciones_entrenamiento": 15781,
+        "observaciones_prueba": 3894
+    },
+    "metrica_evaluacion": "MAE (también RMSE y R2)",
+    "limitacion": "Válido para sectores censales con valor menor a 500001 USD (censo de 1990). No estima viviendas individuales ni el mercado actual.",
+    "python": "3.14.2",
+    "dependencias": "requirements.txt",
+    "commit": "f873e21f4331f5038509725c1f71fd6322a34890"
+}
