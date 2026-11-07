@@ -1,0 +1,8 @@
+variante,mae_promedio,mae_desviacion,mae_minimo,mae_maximo
+LightGBM (Reducido),36853.22,4287.63,32255.36,44546.88
+LightGBM (Completo),36908.71,4418.33,32601.44,44913.89
+Random Forest (Completo),37893.93,4478.49,32893.73,44439.38
+Random Forest (Reducido),37901.69,4571.12,32976.99,44653.01
+SVM (Completo),45910.47,6681.56,39774.03,58841.61
+SVM (Reducido),46788.75,7652.85,39883.83,61711.4
+Dummy (base),76797.92,3341.75,71726.55,81191.42

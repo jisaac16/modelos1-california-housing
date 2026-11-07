@@ -219,3 +219,9 @@ __marimo__/
 
 # Figuras generadas por el notebook
 fase-1/*.png
+
+# Fase 2: resultados generados y versiones de prueba del modelo
+fase-2/outputs/
+fase-2/models/*
+!fase-2/models/v1/
+!fase-2/models/v2/

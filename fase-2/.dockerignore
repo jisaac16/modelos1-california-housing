@@ -1,0 +1,25 @@
+# Entornos y cachés
+.venv/
+venv/
+env/
+**/__pycache__/
+.pytest_cache/
+
+# Git
+.git/
+.gitignore
+
+# Credenciales
+.env
+*.pem
+kaggle.json
+
+# Se entregan con montajes al ejecutar el contenedor
+data/
+models/
+outputs/
+
+# Innecesarios para ejecutar
+Dockerfile
+.dockerignore
+README.md
