@@ -1,0 +1,10 @@
+# Docker usa este archivo al construir con -f fase-4/Dockerfile desde la raíz.
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+.git/
+.env
+data/
+fase-1/
+fase-2/models/
+fase-4/data/

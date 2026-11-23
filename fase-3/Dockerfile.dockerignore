@@ -1,0 +1,16 @@
+# Docker usa este archivo al construir con -f fase-3/Dockerfile desde la raíz.
+**/.venv/
+**/venv/
+**/__pycache__/
+**/.pytest_cache/
+.git/
+.env
+*.pem
+kaggle.json
+data/
+fase-1/
+fase-2/models/
+fase-2/outputs/
+**/Dockerfile
+**/*.dockerignore
+**/README.md
